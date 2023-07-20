@@ -6,4 +6,22 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+  	<PackageReference Include="AutoMapper" Version="12.0.1" />
+  	<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+  	<PackageReference Include="FluentValidation" Version="11.6.0" />
+  	<PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
+  	<PackageReference Include="MediatR" Version="12.1.1" />
+  	<PackageReference Include="System.Linq.Async" Version="6.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Common\Exceptions\" />
+    <Folder Include="UseCases\UsersCostFeatures\Queries\GetAllUsersCostsStatisticByPeriod\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Domain\Domain.csproj" />
+  </ItemGroup>
+
 </Project>
