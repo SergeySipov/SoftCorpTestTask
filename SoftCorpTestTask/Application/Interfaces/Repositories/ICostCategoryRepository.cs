@@ -1,5 +1,4 @@
-﻿using Application.Common.Models;
-using Application.Common.Models.DataModels;
+﻿using Application.Common.Models.DataModels;
 
 namespace Application.Interfaces.Repositories;
 

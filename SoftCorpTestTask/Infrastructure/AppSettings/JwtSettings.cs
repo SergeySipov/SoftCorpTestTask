@@ -11,4 +11,5 @@ public record JwtSettings
     public string ValidIssuer { get; init; }
     public string ValidAudience { get; init; }
     public int TokenDurationInMinutes { get; init; }
+    public int RefreshTokenDurationInDays { get; init; }
 }

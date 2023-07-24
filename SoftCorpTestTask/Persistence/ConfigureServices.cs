@@ -43,5 +43,6 @@ public static class ConfigureServices
         services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
         services.AddScoped<ICostCategoryRepository, CostCategoryRepository>();
         services.AddScoped<IUsersCostRepository, UsersCostRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
     }
 }

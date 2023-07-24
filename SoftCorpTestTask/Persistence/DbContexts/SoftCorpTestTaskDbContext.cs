@@ -16,6 +16,7 @@ public class SoftCorpTestTaskDbContext : DbContext, ISoftCorpTestTaskDbContext
     public DbSet<UsersCost> UsersCosts { get; set; }
     public DbSet<Family> Families { get; set; }
     public DbSet<UserFamily> UsersFamilies { get; set; }
+    public DbSet<UserRefreshToken> UsersRefreshTokens { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

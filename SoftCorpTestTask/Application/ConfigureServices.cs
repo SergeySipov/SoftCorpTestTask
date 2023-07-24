@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace Application;
 
-public static class ServiceCollectionsExtensions
+public static class ConfigureServices
 {
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {

@@ -53,7 +53,7 @@ public class UsersCostRepository : IUsersCostRepository
                 FamilyId = f.Id,
                 FamilyTitle = f.Title,
                 UserId = u.Id,
-                UserName = u.Name
+                UserName = u.Username
             }).ToList();
 
         var familyMemberCostsStatistic = new List<FamilyMemberCostsStatisticDataModel>(selectedUserFamilyInfo.Count);

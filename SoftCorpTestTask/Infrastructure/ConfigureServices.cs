@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System.Reflection;
 using System.Text;
 using Application.Interfaces.Services;
 using Infrastructure.AppSettings;
@@ -19,7 +18,7 @@ public static class ConfigureServices
 
         services.AddAuthenticationAndAuthorization(appSettings);
 
-        services.AddSingleton<IJwtTokenGenerationService, JwtTokenGenerationService>();
+        services.AddSingleton<ITokenGenerationService, TokenGenerationService>();
         services.AddSingleton<IPasswordValidationService, PasswordValidationService>();
         
         return services;
@@ -28,8 +27,6 @@ public static class ConfigureServices
     private static AppSettingsCompositeModel AddAppSettingsModels(this IServiceCollection services,
     IConfiguration configuration)
     {
-        (configuration as ConfigurationManager).AddUserSecrets(Assembly.GetExecutingAssembly(), true);
-
         var jwtSettingsSection = configuration.GetSection(SettingsSectionNameConstants.JwtSettings);
         var jwtSettings = jwtSettingsSection.Get<JwtSettings>();
         services.Configure<JwtSettings>(jwtSettingsSection);
@@ -46,7 +43,7 @@ public static class ConfigureServices
 
         return compositeModel;
     }
-
+    
     private static void AddAuthenticationAndAuthorization(this IServiceCollection services,
         AppSettingsCompositeModel appSettings)
     {
