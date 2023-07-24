@@ -8,7 +8,7 @@ namespace Application.UseCases.CostCategoryFeatures.Commands.Delete;
 
 public record DeleteCostCategoryCommand : IRequest
 {
-    public int CostCategoryId { get; set; }
+    public int CostCategoryId { get; init; }
 }
 
 internal class DeleteCostCategoryCommandHandler : IRequestHandler<DeleteCostCategoryCommand>

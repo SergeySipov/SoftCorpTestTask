@@ -9,12 +9,7 @@ public class CostCategoryMappingsProfile : Profile
 {
     public CostCategoryMappingsProfile()
     {
-        CreateMap<CreateCostCategoryCommand, CostCategory>()
-            .ForMember(destination => destination.Color, option =>
-                option.MapFrom(c => int.Parse(c.Color, System.Globalization.NumberStyles.HexNumber)));
-
-        CreateMap<UpdateCostCategoryCommand, CostCategory>()
-            .ForMember(destination => destination.Color, option =>
-                option.MapFrom(c => int.Parse(c.Color, System.Globalization.NumberStyles.HexNumber)));
+        CreateMap<CreateCostCategoryCommand, CostCategory>();
+        CreateMap<UpdateCostCategoryCommand, CostCategory>();
     }
 }

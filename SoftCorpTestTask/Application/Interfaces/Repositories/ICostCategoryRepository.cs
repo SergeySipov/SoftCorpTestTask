@@ -1,9 +1,10 @@
 ﻿using Application.Common.Models;
+using Application.Common.Models.DataModels;
 
 namespace Application.Interfaces.Repositories;
 
 public interface ICostCategoryRepository
 {
-    ValueTask<bool> IsCostCategoryInUse(int id);
-    Task<CostCategoryBriefModel> GetByIdAsync(int id);
+    Task<bool> IsCostCategoryInUse(int id);
+    Task<CostCategoryBriefDataModel> GetByIdAsync(int id);
 }

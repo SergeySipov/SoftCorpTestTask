@@ -5,8 +5,8 @@ namespace Application.Common.Models;
 
 public record UsersCostModel : IMapFrom<UsersCostDataModel>
 {
-    public decimal Price { get; set; }
-    public string Comment { get; set; }
-    public DateTime Date { get; set; }
-    public string CostCategoryName { get; set; }
+    public decimal Price { get; init; }
+    public string Comment { get; init; }
+    public DateTime Date { get; init; }
+    public string CostCategoryName { get; init; }
 }

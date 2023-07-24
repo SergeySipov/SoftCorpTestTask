@@ -11,6 +11,6 @@ public class UsersCost : BaseEntity
     public int UserId { get; set; }
     public User User { get; set; }
 
-    public int CostId { get; set; }
+    public int CostCategoryId { get; set; }
     public CostCategory CostCategory { get; set; }
 }

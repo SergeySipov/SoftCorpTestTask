@@ -8,9 +8,9 @@ namespace Application.UseCases.CostCategoryFeatures.Commands.Create;
 
 public record CreateCostCategoryCommand : IRequest
 {
-    public string Name { get; set; }
-    public string Description { get; set; }
-    public string Color { get; set; }
+    public string Name { get; init; }
+    public string Description { get; init; }
+    public string Color { get; init; }
 }
 
 internal class CreateCostCategoryCommandHandler : IRequestHandler<CreateCostCategoryCommand>

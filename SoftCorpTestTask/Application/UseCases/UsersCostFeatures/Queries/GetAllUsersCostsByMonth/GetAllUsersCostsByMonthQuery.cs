@@ -1,28 +1,26 @@
 ﻿using Application.Common.Models;
 using Application.Common.Models.Common;
 using Application.Common.Models.DataModels;
-using Application.Interfaces.Repositories.Common;
+using Application.Interfaces.Repositories;
+using Application.UseCases.UsersCostFeatures.Queries.Common;
 using AutoMapper;
-using Domain.Entities;
+using Domain.Enums;
 using MediatR;
 
 namespace Application.UseCases.UsersCostFeatures.Queries.GetAllUsersCostsByMonth;
 
-public record GetAllUsersCostsByMonthQuery : IRequest<PaginatedList<UsersCostModel>>
+public record GetAllUsersCostsByMonthQuery : UsersCostsSearchQueryBaseRequest<PaginatedList<UsersCostModel>>
 {
-    public int PageNumber { get; init; }
-    public int PageSize { get; init; }
-    public IEnumerable<int> CostCategoriesIds { get; init; }
-    public int UserId { get; init; }
+    public Month Month { get; init; }
 }
 
 internal class GetAllUsersCostsByMonthQueryHandler : IRequestHandler<GetAllUsersCostsByMonthQuery, PaginatedList<UsersCostModel>>
 {
     private readonly IMapper _mapper;
-    private readonly IPaginatedRepository<UsersCost> _usersCostRepository;
+    private readonly IUsersCostRepository _usersCostRepository;
 
     public GetAllUsersCostsByMonthQueryHandler(IMapper mapper, 
-        IPaginatedRepository<UsersCost> usersCostRepository)
+        IUsersCostRepository usersCostRepository)
     {
         _mapper = mapper;
         _usersCostRepository = usersCostRepository;
@@ -30,18 +28,17 @@ internal class GetAllUsersCostsByMonthQueryHandler : IRequestHandler<GetAllUsers
 
     public async Task<PaginatedList<UsersCostModel>> Handle(GetAllUsersCostsByMonthQuery request, CancellationToken cancellationToken)
     {
-        var usersCostDataModels = await _usersCostRepository
-            .GetPaginatedChunkAsync<UsersCostDataModel>(request.PageNumber, request.PageSize)
-            .ToListAsync(cancellationToken);
-        
-        var usersCostModels = _mapper.Map<List<UsersCostModel>>(usersCostDataModels);
-        var totalItemsCount = await _usersCostRepository.GetTotalNumberOfEntitiesAsync(cancellationToken);
+        var searchModel = new UsersCostsSearchDataModel
+        {
+            UserId = request.UserId,
+            CostCategoriesIds = request.CostCategoriesIds,
+            PageSize = request.PageSize,
+            PageNumber = request.PageNumber
+        };
 
-        var paginatedModel = new PaginatedList<UsersCostModel>(usersCostModels,
-            totalItemsCount,
-            request.PageNumber,
-            request.PageSize);
+        var usersCostsDataModel = await _usersCostRepository.GetUsersCostsByMonthAsync(
+            searchModel, request.Month);
 
-        return paginatedModel;
+        return _mapper.Map<PaginatedList<UsersCostModel>>(usersCostsDataModel);
     }
 }

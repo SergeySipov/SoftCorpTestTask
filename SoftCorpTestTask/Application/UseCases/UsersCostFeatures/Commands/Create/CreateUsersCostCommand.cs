@@ -8,11 +8,11 @@ namespace Application.UseCases.UsersCostFeatures.Commands.Create;
 
 public record CreateUsersCostCommand : IRequest
 {
-    public decimal Price { get; set; }
-    public string Comment { get; set; }
-    public DateTime Date { get; set; }
-    public int UserId { get; set; }
-    public int CostId { get; set; }
+    public decimal Price { get; init; }
+    public string Comment { get; init; }
+    public DateTime Date { get; init; }
+    public int UserId { get; init; }
+    public int CostId { get; init; }
 }
 
 internal class CreateUsersCostCommandHandler : IRequestHandler<CreateUsersCostCommand>

@@ -8,10 +8,10 @@ namespace Application.UseCases.CostCategoryFeatures.Commands.Update;
 
 public record UpdateCostCategoryCommand : IRequest
 {
-    public int Id { get; set; }
-    public string Name { get; set; }
-    public string Description { get; set; }
-    public string Color { get; set; }
+    public int Id { get; init; }
+    public string Name { get; init; }
+    public string Description { get; init; }
+    public string Color { get; init; }
 }
 
 internal class UpdateCostCategoryCommandHandler : IRequestHandler<UpdateCostCategoryCommand>
@@ -29,11 +29,11 @@ internal class UpdateCostCategoryCommandHandler : IRequestHandler<UpdateCostCate
         _mapper = mapper;
     }
     
-    public Task Handle(UpdateCostCategoryCommand request, CancellationToken cancellationToken)
-    {//TODO проверка на наличие сущности
+    public async Task Handle(UpdateCostCategoryCommand request, CancellationToken cancellationToken)
+    {
         var costCategoryToUpdate = _mapper.Map<CostCategory>(request);
-        _costCategoryBaseRepository.Update(costCategoryToUpdate);
+        await _costCategoryBaseRepository.UpdateAsync(costCategoryToUpdate);
         
-        return _unitOfWork.SaveAsync(cancellationToken);
+        await _unitOfWork.SaveAsync(cancellationToken);
     }
 }

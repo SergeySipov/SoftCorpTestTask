@@ -1,11 +1,11 @@
 ﻿using Application.Common.Mappings;
-using Domain.Entities;
+using Application.Common.Models.DataModels;
 
 namespace Application.Common.Models;
 
-public record CostCategoryBriefModel : IMapFrom<CostCategory>
+public record CostCategoryBriefModel : IMapFrom<CostCategoryBriefDataModel>
 {
-    public string Name { get; set; }
-    public string Description { get; set; }
-    public string Color { get; set; }
+    public string Name { get; init; }
+    public string Description { get; init; }
+    public string Color { get; init; }
 }

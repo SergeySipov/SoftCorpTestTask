@@ -7,8 +7,8 @@ namespace Application.UseCases.UsersCostFeatures.Commands.Delete;
 
 public record DeleteUsersCostCommand : IRequest
 {
-    public int UsersCostId { get; set; }
-    public int CurrentUserId { get; set; }
+    public int UsersCostId { get; init; }
+    public int CurrentUserId { get; init; }
 }
 
 internal class DeleteUsersCostCommandHandler : IRequestHandler<DeleteUsersCostCommand>

@@ -8,13 +8,13 @@ namespace Application.UseCases.UsersCostFeatures.Commands.Update;
 
 public record UpdateUsersCostCommand : IRequest
 {
-    public int Id { get; set; }
-    public decimal Price { get; set; }
-    public string Comment { get; set; }
-    public DateTime Date { get; set; }
-    public int UserId { get; set; }
-    public int CostId { get; set; }
-    public int CurrentUserId { get; set; }
+    public int Id { get; init; }
+    public decimal Price { get; init; }
+    public string Comment { get; init; }
+    public DateTime Date { get; init; }
+    public int UserId { get; init; }
+    public int CostId { get; init; }
+    public int CurrentUserId { get; init; }
 }
 
 internal class UpdateUsersCostCommandHandler : IRequestHandler<UpdateUsersCostCommand>
@@ -41,7 +41,7 @@ internal class UpdateUsersCostCommandHandler : IRequestHandler<UpdateUsersCostCo
         }
 
         var usersCostToUpdate = _mapper.Map<UsersCost>(request);
-        _usersCostBaseRepository.Update(usersCostToUpdate);
+        await _usersCostBaseRepository.UpdateAsync(usersCostToUpdate);
 
         await _unitOfWork.SaveAsync(cancellationToken);
     }
