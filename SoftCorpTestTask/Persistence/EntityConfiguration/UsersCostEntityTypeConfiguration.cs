@@ -1,5 +1,6 @@
 ﻿using System.Data;
 using Domain.Entities;
+using Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Persistence.Constants;
@@ -23,6 +24,9 @@ public class UsersCostEntityTypeConfiguration : IEntityTypeConfiguration<UsersCo
         builder.Property(uc => uc.Price)
             .IsRequired()
             .HasPrecision(8, 6);
+
+        builder.Property(uc => uc.CurrencyCode)
+            .HasDefaultValue(CurrencyCode.BYN);
 
         builder.HasOne(uc => uc.CostCategory)
             .WithMany(c => c.UsersCosts)

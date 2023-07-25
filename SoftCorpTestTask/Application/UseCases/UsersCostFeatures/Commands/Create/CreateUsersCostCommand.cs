@@ -2,6 +2,7 @@
 using Application.Interfaces.UnitOfWork;
 using AutoMapper;
 using Domain.Entities;
+using Domain.Enums;
 using MediatR;
 
 namespace Application.UseCases.UsersCostFeatures.Commands.Create;
@@ -9,6 +10,7 @@ namespace Application.UseCases.UsersCostFeatures.Commands.Create;
 public record CreateUsersCostCommand : IRequest
 {
     public decimal Price { get; init; }
+    public CurrencyCode CurrencyCode { get; init; }
     public string Comment { get; init; }
     public DateTime Date { get; init; }
     public int UserId { get; init; }

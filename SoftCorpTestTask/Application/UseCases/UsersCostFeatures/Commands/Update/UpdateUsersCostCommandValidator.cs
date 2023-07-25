@@ -18,6 +18,9 @@ public class UpdateUsersCostCommandValidator : AbstractValidator<UpdateUsersCost
         RuleFor(c => c.Price)
             .GreaterThan(0);
 
+        RuleFor(c => c.CurrencyCode)
+            .IsInEnum();
+
         RuleFor(c => c.Date)
             .LessThan(DateTime.Now);
 

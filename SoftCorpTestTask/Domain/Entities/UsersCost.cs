@@ -1,10 +1,12 @@
 ﻿using Domain.Common;
+using Domain.Enums;
 
 namespace Domain.Entities;
 
 public class UsersCost : BaseEntity
 {
     public decimal Price { get; set; }
+    public CurrencyCode CurrencyCode { get; set; }
     public string Comment { get; set; }
     public DateTime Date { get; set; }
 

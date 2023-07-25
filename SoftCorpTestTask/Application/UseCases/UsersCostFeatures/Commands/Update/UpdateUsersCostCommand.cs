@@ -2,6 +2,7 @@
 using Application.Interfaces.UnitOfWork;
 using AutoMapper;
 using Domain.Entities;
+using Domain.Enums;
 using MediatR;
 
 namespace Application.UseCases.UsersCostFeatures.Commands.Update;
@@ -10,6 +11,7 @@ public record UpdateUsersCostCommand : IRequest
 {
     public int Id { get; init; }
     public decimal Price { get; init; }
+    public CurrencyCode CurrencyCode { get; init; }
     public string Comment { get; init; }
     public DateTime Date { get; init; }
     public int UserId { get; init; }

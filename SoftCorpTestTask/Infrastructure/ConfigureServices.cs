@@ -20,8 +20,20 @@ public static class ConfigureServices
 
         services.AddSingleton<ITokenGenerationService, TokenGenerationService>();
         services.AddSingleton<IPasswordValidationService, PasswordValidationService>();
-        
+
+        services.AddOpenExchangeRatesHttpClientAndService(appSettings.OpenExchangeRatesSettings);
+
         return services;
+    }
+
+    private static void AddOpenExchangeRatesHttpClientAndService(this IServiceCollection services, OpenExchangeRatesSettings settings)
+    {
+        services.AddHttpClient(HttpClientConstants.OpenExchangeRatesHttpClientName, client =>
+        {
+            client.BaseAddress = new Uri(settings.BaseUri);
+            client.DefaultRequestHeaders.Add("apikey", settings.AppId);
+        });
+        services.AddScoped<ICurrencyExchangeService, CurrencyExchangeService>();
     }
 
     private static AppSettingsCompositeModel AddAppSettingsModels(this IServiceCollection services,
@@ -35,10 +47,16 @@ public static class ConfigureServices
         var dataGeneratorSettings = dataGeneratorSettingsSection.Get<DataGeneratorSettings>();
         services.Configure<DataGeneratorSettings>(dataGeneratorSettingsSection);
 
+        var openExchangeRatesSettingsSection = configuration.GetSection(SettingsSectionNameConstants.OpenExchangeRatesSettings);
+        var openExchangeRatesSettings = openExchangeRatesSettingsSection.Get<OpenExchangeRatesSettings>();
+        services.Configure<OpenExchangeRatesSettings>(openExchangeRatesSettingsSection);
+        
+
         var compositeModel = new AppSettingsCompositeModel
         {
             JwtSettings = jwtSettings,
-            DataGeneratorSettings = dataGeneratorSettings
+            DataGeneratorSettings = dataGeneratorSettings,
+            OpenExchangeRatesSettings = openExchangeRatesSettings
         };
 
         return compositeModel;
