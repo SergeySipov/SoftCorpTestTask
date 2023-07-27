@@ -1,4 +1,5 @@
-﻿using Application.Interfaces.Repositories;
+﻿using Application.Interfaces.DbContextSeed;
+using Application.Interfaces.Repositories;
 using Application.Interfaces.Repositories.Common;
 using Application.Interfaces.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
@@ -6,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Persistence.Constants;
 using Persistence.DbContexts;
+using Persistence.DbContextSeed;
 using Persistence.Repositories;
 using Persistence.Repositories.Common;
 
@@ -15,6 +17,7 @@ public static class ConfigureServices
 {
     public static IServiceCollection AddPersistentServices(this IServiceCollection services, IConfiguration configuration)
     {
+        services.AddScoped<IDbContextSeed, SoftCorpTestTaskDbContextSeed>();
         services.AddDbContext(configuration);
         services.AddRepositories();
 
@@ -44,5 +47,6 @@ public static class ConfigureServices
         services.AddScoped<ICostCategoryRepository, CostCategoryRepository>();
         services.AddScoped<IUsersCostRepository, UsersCostRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IUserRefreshTokenRepository, UserRefreshTokenRepository>();
     }
 }

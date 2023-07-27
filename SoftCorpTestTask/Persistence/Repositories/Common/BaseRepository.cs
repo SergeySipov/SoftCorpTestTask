@@ -1,5 +1,7 @@
 ﻿using Application.Interfaces.Repositories.Common;
 using Domain.Common;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Persistence.DbContexts;
 using Persistence.Exceptions;
 
@@ -29,6 +31,7 @@ public class BaseRepository<T> : IBaseRepository<T> where T : BaseEntity
         }
 
         _dbContext.Entry(existedEntity).CurrentValues.SetValues(entity);
+        _dbContext.Entry(existedEntity).State = EntityState.Modified;
     }
 
     public void Delete(T entity)
@@ -56,5 +59,15 @@ public class BaseRepository<T> : IBaseRepository<T> where T : BaseEntity
     public ValueTask<T> GetByIdAsync(int id)
     {
         return _dbContext.Set<T>().FindAsync(id)!;
+    }
+
+    public Task ClearTableAsync()
+    {
+        var set = _dbContext.Set<T>();
+
+        var entityType = _dbContext.Model.FindEntityType(set.GetType().GenericTypeArguments[0]);
+
+        var query = @$"DELETE FROM [{entityType.GetSchema() ?? "dbo"}].[{entityType.GetTableName()}];";
+        return _dbContext.Database.ExecuteSqlRawAsync(query);
     }
 }

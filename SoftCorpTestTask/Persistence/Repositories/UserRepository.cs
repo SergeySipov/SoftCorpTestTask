@@ -14,7 +14,7 @@ public class UserRepository : IUserRepository
         _dbContext = dbContext;
     }
 
-    public Task<UserLoginDataModel?> GetUserLoginDataAsync(string username)
+    public Task<UserLoginDataModel?> GetUserLoginDataAsync(string email)
     {
         return _dbContext.Users.Select(u => new UserLoginDataModel
             {
@@ -24,7 +24,7 @@ public class UserRepository : IUserRepository
                 PasswordHash = u.PasswordHash,
                 PasswordSalt = u.PasswordSalt
             })
-            .FirstOrDefaultAsync(u => u.Username == username);
+            .FirstOrDefaultAsync(u => u.Email == email);
     }
     
     public Task<UserLoginInfoDataModel?> GetUserLoginInfoAsync(string email)

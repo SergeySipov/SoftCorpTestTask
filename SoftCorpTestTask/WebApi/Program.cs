@@ -10,6 +10,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Persistence.Constants;
 using WebApi.Extensions;
+using Application.Interfaces.DbContextSeed;
+using WebApi.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
@@ -50,6 +52,7 @@ if (!webHostEnvironment.IsProduction())
     });
 }
 
+app.UseMiddleware<ErrorHandlerMiddleware>();
 app.UseHttpsRedirection();
 app.UseRouting();
 app.UseAuthentication();
@@ -58,6 +61,14 @@ app.MapControllers();
 
 app.MapHealthChecks(AppSettingConstants.HealthCheckMap,
     new HealthCheckOptions { ResponseWriter = WriteHealthCheckResponse });
+
+var isDataGenerationEnabled = bool.Parse(configuration[AppSettingConstants.IsDataGenerationEnabled] ?? bool.FalseString);
+if (isDataGenerationEnabled)
+{
+    using var dbContextSeed = app.Services.GetService<IDbContextSeed>();
+    dbContextSeed?.InitDbWithDefaultValues();
+}
+
 
 app.Run();
 

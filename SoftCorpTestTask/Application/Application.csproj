@@ -17,7 +17,6 @@
 
   <ItemGroup>
     <Folder Include="Common\Exceptions\" />
-    <Folder Include="UseCases\UserFeatures\Queries\" />
   </ItemGroup>
 
   <ItemGroup>

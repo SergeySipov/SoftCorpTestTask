@@ -42,7 +42,43 @@ public class TokenGenerationService : ITokenGenerationService
             RefreshToken = refreshTokenModel
         };
     }
-    
+
+    public UserTokenClaimsModel GetUserClaimsFromToken(string accessToken)
+    {
+        var claimsPrincipal = GetPrincipalFromExpiredToken(accessToken);
+        
+        var userId = claimsPrincipal.Claims.FirstOrDefault(c => c.Type.Equals(AuthenticationConstants.UserIdClaimName))?.Value;
+        var userEmail = claimsPrincipal.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Email))?.Value;
+
+        return new UserTokenClaimsModel
+        {
+            UserId = userId,
+            UserEmail = userEmail
+        };
+    }
+
+    private ClaimsPrincipal GetPrincipalFromExpiredToken(string accessToken)
+    {
+        var tokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateAudience = false,
+            ValidateIssuer = false,
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.SecretKey)),
+            ValidateLifetime = true
+        };
+
+        var tokenHandler = new JwtSecurityTokenHandler();
+        
+        var principal = tokenHandler.ValidateToken(accessToken, tokenValidationParameters, out var securityToken);
+        if (securityToken is not JwtSecurityToken jwtSecurityToken || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
+        {
+            throw new SecurityTokenException("Invalid token");
+        }
+
+        return principal;
+    }
+
     private UserRefreshTokenModel GenerateRefreshToken(int userId)
     {
         var refreshToken = new UserRefreshTokenModel

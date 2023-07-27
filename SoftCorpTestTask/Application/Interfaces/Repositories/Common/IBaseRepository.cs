@@ -10,4 +10,5 @@ public interface IBaseRepository<T> where T : class, IEntity
     Task UpdateAsync(T entity);
     void Delete(T entity);
     void Delete(int id);
+    Task ClearTableAsync();
 }

@@ -6,7 +6,7 @@ public class AuthenticateUserAndGetJwtTokenCommandValidator : AbstractValidator<
 {
     public AuthenticateUserAndGetJwtTokenCommandValidator()
     {
-        RuleFor(u => u.Username)
+        RuleFor(u => u.Email)
             .NotEmpty()
             .MaximumLength(256);
 

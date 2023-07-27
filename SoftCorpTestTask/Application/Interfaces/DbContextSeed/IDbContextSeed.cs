@@ -1,8 +1,6 @@
-﻿using Domain.Common.Interfaces;
+﻿namespace Application.Interfaces.DbContextSeed;
 
-namespace Application.Interfaces.DbContextSeed;
-
-public interface IDbContextSeed<T> where T : class, IEntity
+public interface IDbContextSeed : IDisposable 
 {
-    
+    void InitDbWithDefaultValues();
 }

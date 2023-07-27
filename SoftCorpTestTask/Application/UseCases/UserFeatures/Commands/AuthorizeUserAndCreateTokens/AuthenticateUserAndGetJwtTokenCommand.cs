@@ -12,7 +12,7 @@ namespace Application.UseCases.UserFeatures.Commands.AuthorizeUserAndCreateToken
 
 public record AuthenticateUserAndGetJwtTokenCommand : IRequest<LoginResponseModel>
 {
-    public string Username { get; init; }
+    public string Email { get; init; }
     public string Password { get; init; }
 }
 
@@ -21,30 +21,33 @@ internal class AuthenticateUserAndGetJwtTokenCommandHandler : IRequestHandler<Au
 {
     private readonly IUserRepository _userRepository;
     private readonly IPasswordValidationService _passwordValidationService;
-    private readonly ITokenGenerationService _tokenGeneratorService;
+    private readonly ITokenGenerationService _tokenGenerationService;
     private readonly IBaseRepository<UserRefreshToken> _userRefreshTokenBaseRepository;
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IUserRefreshTokenRepository _userRefreshTokenRepository;
 
     public AuthenticateUserAndGetJwtTokenCommandHandler(IUserRepository userRepository,
         IPasswordValidationService passwordValidationService,
-        ITokenGenerationService tokenGeneratorService,
+        ITokenGenerationService tokenGenerationService,
         IBaseRepository<UserRefreshToken> userRefreshTokenBaseRepository,
         IMapper mapper,
-        IUnitOfWork unitOfWork)
+        IUnitOfWork unitOfWork, 
+        IUserRefreshTokenRepository userRefreshTokenRepository)
     {
         _userRepository = userRepository;
         _passwordValidationService = passwordValidationService;
-        _tokenGeneratorService = tokenGeneratorService;
+        _tokenGenerationService = tokenGenerationService;
         _userRefreshTokenBaseRepository = userRefreshTokenBaseRepository;
         _mapper = mapper;
         _unitOfWork = unitOfWork;
+        _userRefreshTokenRepository = userRefreshTokenRepository;
     }
 
     public async Task<LoginResponseModel> Handle(AuthenticateUserAndGetJwtTokenCommand request,
-        CancellationToken cancellationToken)//TODO возможно стоит разбить на отдельные command и query
+        CancellationToken cancellationToken)
     {
-        var userLoginData = await _userRepository.GetUserLoginDataAsync(request.Username);
+        var userLoginData = await _userRepository.GetUserLoginDataAsync(request.Email);
         if (userLoginData == null)
         {
             throw new AuthenticationException("Wrong login or password");
@@ -60,8 +63,14 @@ internal class AuthenticateUserAndGetJwtTokenCommandHandler : IRequestHandler<Au
             throw new AuthenticationException("Wrong login or password");
         }
 
-        var userTokens = _tokenGeneratorService.GenerateAccessAndRefreshTokens(userLoginData.Id,
+        var userTokens = _tokenGenerationService.GenerateAccessAndRefreshTokens(userLoginData.Id,
             userLoginData.Email);
+
+        var oldUserRefreshToken = await _userRefreshTokenRepository.GetUserRefreshTokenAsync(userLoginData.Id);
+        if (oldUserRefreshToken != null)
+        {
+            _userRefreshTokenBaseRepository.Delete(oldUserRefreshToken);
+        }
 
         var userRefreshToken = _mapper.Map<UserRefreshToken>(userTokens.RefreshToken);
         _userRefreshTokenBaseRepository.Add(userRefreshToken);

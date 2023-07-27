@@ -5,4 +5,5 @@ namespace Application.Interfaces.Services;
 public interface ITokenGenerationService
 {
     UserTokensModel GenerateAccessAndRefreshTokens(int userId, string userEmail);
+    UserTokenClaimsModel GetUserClaimsFromToken(string accessToken);
 }
