@@ -7,6 +7,8 @@ using Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Infrastructure.Constants;
+using Infrastructure.MediatR;
+using MediatR;
 
 namespace Infrastructure;
 
@@ -22,6 +24,7 @@ public static class ConfigureServices
         services.AddSingleton<IPasswordValidationService, PasswordValidationService>();
 
         services.AddOpenExchangeRatesHttpClientAndService(appSettings.OpenExchangeRatesSettings);
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
         return services;
     }

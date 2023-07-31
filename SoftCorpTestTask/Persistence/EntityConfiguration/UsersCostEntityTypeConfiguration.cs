@@ -23,7 +23,7 @@ public class UsersCostEntityTypeConfiguration : IEntityTypeConfiguration<UsersCo
 
         builder.Property(uc => uc.Price)
             .IsRequired()
-            .HasPrecision(8, 6);
+            .HasPrecision(12, 4);// total numbers / with 6 digits before decimal point
 
         builder.Property(uc => uc.CurrencyCode)
             .HasDefaultValue(CurrencyCode.BYN);

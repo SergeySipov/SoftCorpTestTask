@@ -14,7 +14,7 @@ public record CreateUsersCostCommand : IRequest
     public string Comment { get; init; }
     public DateTime Date { get; init; }
     public int UserId { get; init; }
-    public int CostId { get; init; }
+    public int CostCategoryId { get; init; }
 }
 
 internal class CreateUsersCostCommandHandler : IRequestHandler<CreateUsersCostCommand>
@@ -22,7 +22,6 @@ internal class CreateUsersCostCommandHandler : IRequestHandler<CreateUsersCostCo
     private readonly IBaseRepository<UsersCost> _usersCostRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
-
 
     public CreateUsersCostCommandHandler(IBaseRepository<UsersCost> usersCostRepository, 
         IUnitOfWork unitOfWork, 

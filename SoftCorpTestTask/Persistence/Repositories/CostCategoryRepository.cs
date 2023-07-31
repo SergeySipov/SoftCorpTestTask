@@ -1,5 +1,6 @@
 ﻿using Application.Common.Models.DataModels;
 using Application.Interfaces.Repositories;
+using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Persistence.DbContexts;
 
@@ -16,7 +17,8 @@ public class CostCategoryRepository : ICostCategoryRepository
 
     public Task<bool> IsCostCategoryInUse(int id)
     {
-        return _dbContext.CostCategories.AnyAsync(e => e.Id == id);
+        return _dbContext.Set<UsersCost>()
+            .AnyAsync(e => e.CostCategoryId == id);
     }
 
     public Task<CostCategoryBriefDataModel> GetByIdAsync(int id)

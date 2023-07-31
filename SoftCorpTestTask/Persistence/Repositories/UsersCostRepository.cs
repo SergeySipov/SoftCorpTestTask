@@ -7,6 +7,7 @@ using Persistence.DbContexts;
 using System.Linq.Expressions;
 using Persistence.Extensions;
 using Application.Common.Models.DataModels.UsersCostStatistic;
+using Microsoft.EntityFrameworkCore;
 
 namespace Persistence.Repositories;
 
@@ -19,13 +20,14 @@ public class UsersCostRepository : IUsersCostRepository
         _dbContext = dbContext;
     }
 
-    public Task<PaginatedList<UsersCostDataModel>> GetUsersCostsByMonthAsync(UsersCostsSearchDataModel searchModel, Month month)
+    public Task<PaginatedList<UsersCostDataModel>> GetUsersCostsByMonthAsync(UsersCostsSearchDataModel searchModel,
+        Month month)
     {
-        var query = ApplyFiltersToQuery(_dbContext.UsersCosts, 
-            searchModel.UserId, 
+        var query = ApplyFiltersToQuery(_dbContext.UsersCosts,
+            searchModel.UserId,
             searchModel.CostCategoriesIds,
             uc => uc.Date.Month == (int)month);
-        
+
         var usersCostDataModels = from uc in query
             join cc in _dbContext.CostCategories on uc.CostCategoryId equals cc.Id
             select new UsersCostDataModel
@@ -40,39 +42,62 @@ public class UsersCostRepository : IUsersCostRepository
         return usersCostDataModels.ToPaginatedListAsync(searchModel.PageNumber, searchModel.PageSize);
     }
 
-    public async Task<FamilyCostsStatisticDataModel> GetFamilyCostsStatisticByPeriodAsync(UsersCostsSearchDataModel searchModel, 
-        DateTime startDate, 
+    public async Task<FamilyCostsStatisticDataModel> GetFamilyCostsStatisticByPeriodAsync(
+        UsersCostsSearchDataModel searchModel,
+        DateTime startDate,
         DateTime endDate)
     {
-        var selectedUserFamilyInfo = (from uf in _dbContext.UsersFamilies
+        var currentFamily = await (from uf in _dbContext.UsersFamilies
             join f in _dbContext.Families on uf.FamilyId equals f.Id
-            join u in _dbContext.Users on uf.UserId equals u.Id
             where uf.UserId == searchModel.UserId
             select new
             {
-                FamilyId = f.Id,
-                FamilyTitle = f.Title,
+                f.Id,
+                f.Title
+            }).FirstOrDefaultAsync();
+
+        var selectedUserFamilyInfo = await (from u in _dbContext.Users
+            join uf in _dbContext.UsersFamilies on u.Id equals uf.UserId into userFamilies
+            from uf in userFamilies.DefaultIfEmpty()
+            where (currentFamily == null && u.Id == searchModel.UserId) ||
+                  (currentFamily != null && uf.FamilyId == currentFamily.Id)
+            select new
+            {
                 UserId = u.Id,
-                UserName = u.Username
-            }).ToList();
+                u.Username,
+                u.FirstName,
+                u.LastName
+            }).ToListAsync();
 
         var familyMemberCostsStatistic = new List<FamilyMemberCostsStatisticDataModel>(selectedUserFamilyInfo.Count);
         foreach (var familyMember in selectedUserFamilyInfo)
         {
-            var familyMemberStatistic = await GetFamilyMemberCostsStatisticByPeriodAsync(searchModel with { UserId = familyMember.UserId }, startDate, endDate);
+            var familyMemberBriefStatistic = await GetFamilyMemberCostsStatisticByPeriodAsync(
+                searchModel with { UserId = familyMember.UserId }, startDate, endDate);
+
+            var familyMemberStatistic = new FamilyMemberCostsStatisticDataModel
+            {
+                FirstName = familyMember.FirstName,
+                LastName = familyMember.LastName,
+                Username = familyMember.Username,
+                FamilyMemberDetailedStatistic = familyMemberBriefStatistic.FamilyMemberDetailedStatistic,
+                TotalCosts = familyMemberBriefStatistic.TotalCosts
+            };
+
             familyMemberCostsStatistic.Add(familyMemberStatistic);
         }
 
         var familyCostsStatistic = new FamilyCostsStatisticDataModel
         {
-            FamilyTitle = selectedUserFamilyInfo.First().FamilyTitle,
+            FamilyTitle = currentFamily?.Title ?? string.Empty,
             FamilyMemberStatistic = familyMemberCostsStatistic
         };
 
         return familyCostsStatistic;
     }
 
-    private async Task<FamilyMemberCostsStatisticDataModel> GetFamilyMemberCostsStatisticByPeriodAsync(UsersCostsSearchDataModel searchModel,
+    private async Task<FamilyMemberCostsBriefStatisticDataModel> GetFamilyMemberCostsStatisticByPeriodAsync(
+        UsersCostsSearchDataModel searchModel,
         DateTime startDate,
         DateTime endDate)
     {
@@ -85,7 +110,8 @@ public class UsersCostRepository : IUsersCostRepository
 
         var usersCostsStatisticDataModels = from uc in query
             join cc in _dbContext.CostCategories on uc.CostCategoryId equals cc.Id
-            group uc by cc.Name into guc
+            group uc by cc.Name
+            into guc
             select new UsersCostsStatisticDataModel
             {
                 CostCategoryName = guc.Key,
@@ -93,9 +119,10 @@ public class UsersCostRepository : IUsersCostRepository
                 PercentageOfTotalCosts = guc.Sum(x => x.Price) / totalCosts * 100
             };
 
-        var statisticPaginatedList = await usersCostsStatisticDataModels.ToPaginatedListAsync(searchModel.PageNumber, searchModel.PageSize);
-
-        var familyMemberStatistic = new FamilyMemberCostsStatisticDataModel
+        var statisticPaginatedList =
+            await usersCostsStatisticDataModels.ToPaginatedListAsync(searchModel.PageNumber, searchModel.PageSize);
+        
+        var familyMemberStatistic = new FamilyMemberCostsBriefStatisticDataModel
         {
             FamilyMemberDetailedStatistic = statisticPaginatedList,
             TotalCosts = totalCosts
@@ -105,7 +132,7 @@ public class UsersCostRepository : IUsersCostRepository
     }
 
     private IQueryable<UsersCost> ApplyFiltersToQuery(IQueryable<UsersCost> query,
-        int? userId, 
+        int? userId,
         IEnumerable<int>? costCategoriesIds,
         Expression<Func<UsersCost, bool>>? extendedFilter = null)
     {

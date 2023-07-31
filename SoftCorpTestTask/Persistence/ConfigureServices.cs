@@ -48,5 +48,6 @@ public static class ConfigureServices
         services.AddScoped<IUsersCostRepository, UsersCostRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IUserRefreshTokenRepository, UserRefreshTokenRepository>();
+        services.AddScoped<IUserFamilyRepository, UserFamilyRepository>();
     }
 }

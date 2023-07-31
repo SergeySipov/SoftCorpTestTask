@@ -18,7 +18,7 @@ public static class ClaimsPrincipalExtensions
 
     public static string GetUserEmail(this ClaimsPrincipal claimsPrincipal)
     {
-        var userEmail = claimsPrincipal.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Email)?.Value;
+        var userEmail = claimsPrincipal.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value;
 
         return string.IsNullOrEmpty(userEmail)
             ? throw new AuthenticationException("Invalid user email.")

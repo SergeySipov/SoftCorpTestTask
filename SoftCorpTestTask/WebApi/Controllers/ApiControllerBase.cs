@@ -9,7 +9,7 @@ public abstract class ApiControllerBase : ControllerBase
 {
     private int? _userId;
     private string? _userEmail;
-    
+
     public int UserId
     {
         get

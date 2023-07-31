@@ -9,7 +9,7 @@ public class CreateUsersCostCommandValidator : AbstractValidator<CreateUsersCost
         RuleFor(c => c.Comment)
             .MaximumLength(300);
 
-        RuleFor(c => c.CostId)
+        RuleFor(c => c.CostCategoryId)
             .GreaterThan(0);
 
         RuleFor(c => c.UserId)

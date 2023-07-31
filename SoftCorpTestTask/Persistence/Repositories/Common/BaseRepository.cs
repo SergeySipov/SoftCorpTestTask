@@ -41,7 +41,8 @@ public class BaseRepository<T> : IBaseRepository<T> where T : BaseEntity
 
     public void Delete(int id)
     {
-        var entity = (T)Activator.CreateInstance(typeof(T), id)!;
+        var entity = Activator.CreateInstance<T>();
+        entity.Id = id;
 
         var set = _dbContext.Set<T>();
 
