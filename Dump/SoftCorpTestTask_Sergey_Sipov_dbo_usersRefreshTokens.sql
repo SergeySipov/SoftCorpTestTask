@@ -1,0 +1,2 @@
+INSERT INTO SoftCorpTestTask_Sergey_Sipov.dbo.usersRefreshTokens (id, userId, token, expirationDateTime) VALUES (14, 1001, N'EFC7349F-2702-49B9-A81B-A22C0A9468D3', N'2023-08-01 17:27:00');
+INSERT INTO SoftCorpTestTask_Sergey_Sipov.dbo.usersRefreshTokens (id, userId, token, expirationDateTime) VALUES (16, 1006, N'4FD5F8C4-588C-4B51-8C60-CD97CE876684', N'2023-08-01 21:33:00');
