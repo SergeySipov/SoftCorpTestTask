@@ -1,4 +1,6 @@
 ﻿using System.Net.Mime;
+using System.Security.Authentication;
+using FluentValidation;
 using Persistence.Exceptions;
 using WebApi.ViewModel;
 
@@ -8,6 +10,8 @@ public class ErrorHandlerMiddleware
 {
     private const string InternalServerErrorText = "Internal Server Error.";
     private const string EntityNotFoundErrorText = "Entity not found.";
+    private const string ValidationExceptionText = "Entered data is incorrect";
+    private const string AuthenticationExceptionText = "Forbidden";
 
     private readonly RequestDelegate _next;
     private readonly ILogger<ErrorHandlerMiddleware> _logger;
@@ -63,7 +67,16 @@ public class ErrorHandlerMiddleware
                 statusCode = StatusCodes.Status404NotFound;
                 error = EntityNotFoundErrorText;
                 break;
-
+            case ArgumentException:
+            case AuthenticationException:
+            case ValidationException:
+                statusCode = StatusCodes.Status400BadRequest;
+                error = ValidationExceptionText;
+                break;
+            case InvalidOperationException:
+                statusCode = StatusCodes.Status403Forbidden;
+                error = AuthenticationExceptionText;
+                break;
             default:
                 statusCode = StatusCodes.Status500InternalServerError;
                 error = InternalServerErrorText;

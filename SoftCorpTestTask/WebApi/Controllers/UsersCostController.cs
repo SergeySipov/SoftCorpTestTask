@@ -19,7 +19,19 @@ public class UsersCostController : ApiControllerBase
         _mediator = mediator;
     }
 
-
+    /// <summary>
+    /// Create user's cost
+    /// </summary>
+    /// <param name="model"></param>
+    /// <returns></returns>
+    /// <response code="200">If user's cost created successfully</response>
+    /// <response code="500">If something going wrong</response>
+    /// <response code="400">If values that you have tried to pass are incorrect</response>
+    /// <response code="401">If you are not authenticate</response>
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [HttpPost]
     public async Task<IActionResult> Create(CreateUsersCostCommand model)
     {
@@ -27,6 +39,20 @@ public class UsersCostController : ApiControllerBase
         return Ok();
     }
 
+    /// <summary>
+    /// Delete user's cost
+    /// </summary>
+    /// <param name="currentUserId"></param>
+    /// <param name="usersCostId"></param>
+    /// <returns></returns>
+    /// <response code="200">If user's cost deleted successfully</response>
+    /// <response code="500">If something going wrong</response>
+    /// <response code="400">If values that you have tried to pass are incorrect</response>
+    /// <response code="401">If you are not authenticate</response>
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [HttpDelete]
     public async Task<IActionResult> Delete([FromQuery] int currentUserId, int usersCostId)
     {
@@ -39,6 +65,19 @@ public class UsersCostController : ApiControllerBase
         return Ok();
     }
 
+    /// <summary>
+    /// Update user's cost
+    /// </summary>
+    /// <param name="model"></param>
+    /// <returns></returns>
+    /// <response code="200">If user's cost updated successfully</response>
+    /// <response code="500">If something going wrong</response>
+    /// <response code="400">If values that you have tried to pass are incorrect</response>
+    /// <response code="401">If you are not authenticate</response>
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [HttpPost]
     public async Task<IActionResult> Update(UpdateUsersCostCommand model)
     {
@@ -46,6 +85,18 @@ public class UsersCostController : ApiControllerBase
         return Ok();
     }
 
+    /// <summary>
+    /// Get paginated list of user's costs. Accepts PageNumber and PageSize, as well as two optional filters by user and category
+    /// </summary>
+    /// <param name="model"></param>
+    /// <returns>Pagination info and chunk of user's costs</returns>
+    /// <response code="500">If something going wrong</response>
+    /// <response code="400">If values that you have tried to pass are incorrect</response>
+    /// <response code="401">If you are not authenticate</response>
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [HttpPost]
     public async Task<IActionResult> GetByMonth(GetAllUsersCostsByMonthQuery model)
     {
@@ -53,6 +104,18 @@ public class UsersCostController : ApiControllerBase
         return Ok(response);
     }
 
+    /// <summary>
+    /// Get paginated list of user's costs for all family members. For every family member you can configure pagination
+    /// </summary>
+    /// <param name="model"></param>
+    /// <returns>Pagination info and chunk of user's costs for all family members</returns>
+    /// <response code="500">If something going wrong</response>
+    /// <response code="400">If values that you have tried to pass are incorrect</response>
+    /// <response code="401">If you are not authenticate</response>
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [HttpPost]
     public async Task<IActionResult> GetByPeriod(GetFamilyCostsStatisticByPeriodQuery model)
     {

@@ -31,7 +31,7 @@ internal class DeleteCostCategoryCommandHandler : IRequestHandler<DeleteCostCate
         var isCostCategoryInUse = await _costCategoryRepository.IsCostCategoryInUse(request.CostCategoryId);
         if (isCostCategoryInUse)
         {
-            throw new Exception("It's impossible to delete the category cause it's in use");
+            throw new InvalidOperationException("It's impossible to delete the category cause it's in use");
         }
 
         _costCategoryBaseRepository.Delete(request.CostCategoryId);

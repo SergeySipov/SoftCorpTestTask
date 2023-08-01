@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.OpenApi.Models;
+using System.Reflection;
+using WebApi.Extensions.Swagger.OperationFilters;
 
 namespace WebApi.Extensions;
 
@@ -30,6 +32,9 @@ public static class SwaggerStartupExtension
                         Email = "Sergey.sipov.150699@gmail.com"
                     }
                 });
+
+            var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+            options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 
             options.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
             options.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme

@@ -25,7 +25,6 @@ var appVersion = GetApplicationVersion();
 services.AddControllers();
 services.AddEndpointsApiExplorer();
 services.AddSwagger(appVersion);
-services.AddSwaggerGen();
 services.AddApplicationServices();
 services.AddInfrastructureServices(configuration);
 services.AddPersistentServices(configuration);
