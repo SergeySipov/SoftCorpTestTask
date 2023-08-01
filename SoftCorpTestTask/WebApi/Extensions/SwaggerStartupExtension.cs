@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
-using WebApi.Extensions.Swagger.OperationFilters;
 
 namespace WebApi.Extensions;
 
